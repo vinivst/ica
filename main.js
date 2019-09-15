@@ -9,9 +9,6 @@ module.exports = function(filePath, array, seed) {
     var MersenneTwister = require('mersenne-twister');
     var generator = new MersenneTwister(seed);
 
-    console.log(object.arrays[array].length);
-
-
     //gera as 2 soluções iniciais aleatorias do tipo [0 1 0 1 1 1 0] para o array lido
     let inicialObj = {
     	solucoes: []
@@ -133,16 +130,18 @@ module.exports = function(filePath, array, seed) {
     	let melhorInicial = melhorSolucao;
     	proximaGeracao = gerarSolucao(proximaGeracao[0], proximaGeracao[1]);
     	if (melhorInicial != melhorSolucao) {
-    		console.log(count);
+    		console.log("Iteração: " + count);
     		newMax = Math.floor(0.3 * count);
-    		console.log(newMax);
+    		//console.log(newMax);
+    		console.log("Solucao: " + melhorSolucao);
     		melhorInicial = melhorSolucao;
     	}
     	count++;
     	newMax--;
     }
     console.timeEnd("tempo gasto");
-    console.log(melhorSolucao);
+    console.log("Tamanho do array: " + object.arrays[array].length);
+    return "Melhor solucao: " + melhorSolucao;
 
     // console.log(solucao1);
     // console.log(solucao2);
