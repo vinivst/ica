@@ -11,6 +11,7 @@ module.exports = function(filePath, array, seed) {
 
     console.log(object.arrays[array].length);
 
+
     //gera as 2 soluções iniciais aleatorias do tipo [0 1 0 1 1 1 0] para o array lido
     let inicialObj = {
     	solucoes: []
@@ -45,24 +46,59 @@ module.exports = function(filePath, array, seed) {
 
     let melhorSolucao = Infinity;
 
+    let bestFitness = [];
+    let bestFitnessArrays = [];
+
     let calculaMelhorSolucao = (solucao) => {
     	if (solucao < melhorSolucao) {
     		melhorSolucao = solucao;
     	}
     };
 
+    let calculaBestFitness = (candidatoFitness, candidatoArray) => {
+    	if (bestFitness.length < 2) {
+    		bestFitness.push(candidatoFitness);
+    		bestFitnessArrays.push(candidatoArray);
+    	} else {
+    		for (var j = 0; j < bestFitness.length; j++) {
+    			if (candidatoFitness < bestFitness[j]) {
+    				bestFitness.splice(j, 1, candidatoFitness);
+    				bestFitnessArrays.splice(j, 1, candidatoArray);
+    			}
+    		}
+    	}
+    }
+
     // Cruza os 2 individuos iniciais
     let gerarSolucao = (individuo1, individuo2) => {
 
-    	let indice = Math.floor(generator.random()*individuo1.length);
+    	let indice = Math.floor(individuo1.length/2);
     	let subset1 = individuo1.slice(0, indice);
     	let subset2 = individuo1.slice(indice, individuo1.length);
 
     	let subset3 = individuo2.slice(0, indice);
     	let subset4 = individuo2.slice(indice, individuo2.length);
 
-    	let filho1 = subset1.concat(subset4);
-    	let filho2 = subset3.concat(subset2);
+    	let fitnessCandidatos = [];
+
+    	calculaBestFitness(Math.abs(subset1 - subset2), subset1.concat(subset2));
+    	calculaBestFitness(Math.abs(subset1 - subset3), subset1.concat(subset3));
+    	calculaBestFitness(Math.abs(subset1 - subset4), subset1.concat(subset4));
+
+    	calculaBestFitness(Math.abs(subset2 - subset1), subset2.concat(subset1));
+    	calculaBestFitness(Math.abs(subset2 - subset3), subset2.concat(subset3));
+    	calculaBestFitness(Math.abs(subset2 - subset4), subset2.concat(subset4));
+
+    	calculaBestFitness(Math.abs(subset3 - subset1), subset3.concat(subset1));
+    	calculaBestFitness(Math.abs(subset3 - subset2), subset3.concat(subset2));
+    	calculaBestFitness(Math.abs(subset3 - subset4), subset3.concat(subset4));
+
+    	calculaBestFitness(Math.abs(subset4 - subset1), subset4.concat(subset1));
+    	calculaBestFitness(Math.abs(subset4 - subset2), subset4.concat(subset2));
+    	calculaBestFitness(Math.abs(subset4 - subset3), subset4.concat(subset3));
+
+    	let filho1 = bestFitnessArrays[0];
+    	let filho2 = bestFitnessArrays[1];
 
     	//Realiza a mutação
 
@@ -127,16 +163,17 @@ module.exports = function(filePath, array, seed) {
     let newMax = 100000;
 
     console.time("tempo gasto");
-    while (count < 100000 && newMax > 0) {
+    while (count < 100000 || newMax > 0) {
     	let melhorInicial = melhorSolucao;
     	proximaGeracao = gerarSolucao(proximaGeracao[0], proximaGeracao[1]);
-    	if (melhorInicial == melhorSolucao) {
-    		count++;
-    		newMax--;
-    	} else {
-    		newMax = 0.3*count;
+    	if (melhorInicial != melhorSolucao) {
+    		console.log(count);
+    		newMax = Math.floor(0.3 * count);
+    		console.log(newMax);
     		melhorInicial = melhorSolucao;
     	}
+    	count++;
+    	newMax--;
     }
     console.timeEnd("tempo gasto");
     console.log(melhorSolucao);
