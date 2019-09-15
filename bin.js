@@ -1,7 +1,8 @@
 const minNumPart = require('.') /* the current working directory so that means main.js because of package.json */
 let theFile = process.argv[2] /* what the user enters as first argument */
-let seed = process.argv[3]
+let array = process.argv[3]
+let seed = process.argv[4]
 
 console.log(
-    minNumPart(theFile, seed)
+    minNumPart(theFile, array, seed)
 )

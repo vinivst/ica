@@ -1,5 +1,5 @@
 const fs = require('fs')
-module.exports = function(filePath, seed) {
+module.exports = function(filePath, array, seed) {
 	//le o arquivo arrays.json e transforma num objeto
 	let data = fs.readFileSync(filePath).toString() /* open the file as string */
 	let object = JSON.parse(data) /* parse the string to object */
@@ -9,13 +9,25 @@ module.exports = function(filePath, seed) {
     var MersenneTwister = require('mersenne-twister');
     var generator = new MersenneTwister(seed);
 
+    //     for (var i = 0; i < object.arrays.length; i++) {
+    // 	geraIndividuosIniciais(object.arrays[i]);
+    // }
+
+    // let geraIndividuosIniciais = (array) => {
+    // 	//gera as 2 soluções iniciais aleatorias do tipo [0 1 0 1 1 1 0] para o array lido
+    // 	let inicialObj = {
+    // 		array: array,
+    // 		solucoes: []
+    // 	};
+
+
     //gera as 2 soluções iniciais aleatorias do tipo [0 1 0 1 1 1 0] para o array lido
     let inicialObj = {
     	solucoes: []
     };
 
     for (var i = 0; i < 2; i++) {
-    	let inicial = object.arrays[0].map((num) => {
+    	let inicial = object.arrays[array].map((num) => {
     		if (Math.floor(generator.random()*10) <= 5) {
     			return 0;
     		} else {
