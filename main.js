@@ -129,7 +129,7 @@ module.exports = function(filePath, array, seed) {
     let newMax = 100000;
 
     console.time("tempo gasto");
-    while (count < 100000 || newMax > 0) {
+    while (melhorSolucao != 0 && (count < 100000 || newMax > 0)) {
     	let melhorInicial = melhorSolucao;
     	proximaGeracao = gerarSolucao(proximaGeracao[0], proximaGeracao[1]);
     	if (melhorInicial != melhorSolucao) {
