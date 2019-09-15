@@ -11,6 +11,7 @@ module.exports = function(filePath, array, seed) {
 
     console.log(object.arrays[array].length);
 
+
     //gera as 2 soluções iniciais aleatorias do tipo [0 1 0 1 1 1 0] para o array lido
     let inicialObj = {
     	solucoes: []
@@ -67,10 +68,11 @@ module.exports = function(filePath, array, seed) {
     	//Realiza a mutação
 
     	let mutacao = (array) => {
-    		if (array[array.length - 1] == 0) {
-    			array[array.length - 1] = 1;
+    		let indexMutacao = Math.floor(generator.random()*array.length) - 1;
+    		if (array[indexMutacao] == 0) {
+    			array[indexMutacao] = 1;
     		} else {
-    			array[array.length - 1] = 0;
+    			array[indexMutacao] = 0;
     		}
     		return array;
     	}
@@ -127,16 +129,17 @@ module.exports = function(filePath, array, seed) {
     let newMax = 100000;
 
     console.time("tempo gasto");
-    while (count < 100000 && newMax > 0) {
+    while (count < 100000 || newMax > 0) {
     	let melhorInicial = melhorSolucao;
     	proximaGeracao = gerarSolucao(proximaGeracao[0], proximaGeracao[1]);
-    	if (melhorInicial == melhorSolucao) {
-    		count++;
-    		newMax--;
-    	} else {
-    		newMax = 0.3*count;
+    	if (melhorInicial != melhorSolucao) {
+    		console.log(count);
+    		newMax = Math.floor(0.3 * count);
+    		console.log(newMax);
     		melhorInicial = melhorSolucao;
     	}
+    	count++;
+    	newMax--;
     }
     console.timeEnd("tempo gasto");
     console.log(melhorSolucao);
