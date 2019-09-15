@@ -9,17 +9,7 @@ module.exports = function(filePath, array, seed) {
     var MersenneTwister = require('mersenne-twister');
     var generator = new MersenneTwister(seed);
 
-    //     for (var i = 0; i < object.arrays.length; i++) {
-    // 	geraIndividuosIniciais(object.arrays[i]);
-    // }
-
-    // let geraIndividuosIniciais = (array) => {
-    // 	//gera as 2 soluções iniciais aleatorias do tipo [0 1 0 1 1 1 0] para o array lido
-    // 	let inicialObj = {
-    // 		array: array,
-    // 		solucoes: []
-    // 	};
-
+    console.log(object.arrays[array].length);
 
     //gera as 2 soluções iniciais aleatorias do tipo [0 1 0 1 1 1 0] para o array lido
     let inicialObj = {
@@ -134,14 +124,17 @@ module.exports = function(filePath, array, seed) {
     //console.log(proximaGeracao);
 
     let count = 0;
+    let newMax = 100000;
+
     console.time("tempo gasto");
-    while (count < 100000) {
+    while (count < 100000 && newMax > 0) {
     	let melhorInicial = melhorSolucao;
     	proximaGeracao = gerarSolucao(proximaGeracao[0], proximaGeracao[1]);
     	if (melhorInicial == melhorSolucao) {
     		count++;
+    		newMax--;
     	} else {
-    		count = 0;
+    		newMax = 0.3*count;
     		melhorInicial = melhorSolucao;
     	}
     }

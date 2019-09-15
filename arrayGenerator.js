@@ -9,7 +9,7 @@ let number = 0;
 
 for (var j = 0; j < 10; j++) {
 	let array2 = [];
-	for (var i = 190; i < (Math.floor(generator.random()*1000000) + 190); i++) {
+	for (var i = 0; i < (Math.floor(generator.random()*1000000) + 190); i++) {
 		number = Math.floor(generator.random()*4000000000);
 		array2.push(number);
 	}
