@@ -14,7 +14,7 @@ module.exports = function(filePath, array, seed) {
     	solucoes: []
     };
 
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < Math.floor(generator.random()*1000000 + 2); i++) {
     	let inicial = object.arrays[array].map((num) => {
     		if (Math.floor(generator.random()*10) <= 5) {
     			return 0;
@@ -119,14 +119,41 @@ module.exports = function(filePath, array, seed) {
     	return solucoes;
     };
 
-    let proximaGeracao = gerarSolucao(inicialObj.solucoes[0], inicialObj.solucoes[1]);
+    let calculaMelhorPai = () => {
+        let melhorPai = [];
+        let melhorPaiAux = [];
+        for (var i = 0; i < inicialObj.solucoes.length; i++) {
+            melhorPaiAux.push(calcula(inicialObj.solucoes[i]));
+        }
+        melhorPaiAux.sort(function(a, b){return a-b});
+        //console.log(melhorPaiAux);
+        melhorPai.push(melhorPaiAux[0]);
+        melhorPai.push(melhorPaiAux[1]);
+
+        for (var i = 0; i < melhorPai.length; i++) {
+            for (var j = 0; j < inicialObj.solucoes.length; j++) {
+             if (melhorPai[i] == calcula(inicialObj.solucoes[j])) {
+                melhorPai.splice(i, 1, inicialObj.solucoes[j]);
+            }   
+        }
+    }
+
+    return melhorPai;
+}
+
+let melhorPai = calculaMelhorPai();
+//console.log(melhorPai);
+
+let proximaGeracao = gerarSolucao(melhorPai[0], melhorPai[1]);
+
+//let proximaGeracao = gerarSolucao(inicialObj.solucoes[0], inicialObj.solucoes[1]);
     //console.log(proximaGeracao);
 
     let count = 0;
-    let newMax = 100000;
+    let newMax = 10000;
 
     console.time("tempo gasto");
-    while (melhorSolucao != 0 && (count < 100000 || newMax > 0)) {
+    while (melhorSolucao != 0 && (count < 10000 || newMax > 0)) {
     	let melhorInicial = melhorSolucao;
     	proximaGeracao = gerarSolucao(proximaGeracao[0], proximaGeracao[1]);
     	if (melhorInicial != melhorSolucao) {
