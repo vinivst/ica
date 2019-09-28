@@ -14,7 +14,7 @@ module.exports = function(filePath, array, seed) {
     	solucoes: []
     };
 
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < Math.floor(generator.random()*1000000 + 2); i++) {
     	let inicial = object.arrays[array].map((num) => {
     		if (Math.floor(generator.random()*10) <= 5) {
     			return 0;
@@ -55,28 +55,38 @@ module.exports = function(filePath, array, seed) {
     	let indice = Math.floor(generator.random()*individuo1.length);
     	let indice2 = Math.floor(generator.random()*individuo1.length) + indice;
     	
-    	/*
+    	
+    	//-------------2 divisões----------
+
     	let subset1 = individuo1.slice(0, indice);
     	let subset2 = individuo1.slice(indice, individuo1.length);
 
     	let subset3 = individuo2.slice(0, indice);
-    	let subset4 = individuo2.slice(indice, individuo2.length);
+    	let subset4 = individuo2.slice(indice, individuo2.length);    	
 
-    	let filho1 = subset1.concat(subset4);
-    	let filho2 = subset3.concat(subset2);
-    	*/
+    	
+    	//---------3 divisões------------
 
     	let parent1_subset1 = individuo1.slice(0, indice);
     	let parent1_subset2 = individuo1.slice(indice, indice2);
     	let parent1_subset3 = individuo1.slice(indice2);
 
-    	let parent2_subset1 = individuo2.slice(indice, individuo2.length);
+    	let parent2_subset1 = individuo2.slice(0, indice);
     	let parent2_subset2 = individuo2.slice(indice, indice2);
     	let parent2_subset3 = individuo2.slice(indice2);
 
-    	let filho1 = parent1_subset1.concat(parent2_subset2).concat(parent1_subset3);
-    	let filho2 = parent2_subset1.concat(parent1_subset2).concat(parent2_subset3);
+    	let filho1;
+    	let filho2;
 
+    	//---------Aleatoriamente decide se vai fazer 2 ou 3 divisões
+
+    	if (Math.floor(generator.random()*10) <= 4) {
+    		filho1 = subset1.concat(subset4);
+    		filho2 = subset3.concat(subset2);
+    	} else {
+    		filho1 = parent1_subset1.concat(parent2_subset2).concat(parent1_subset3);
+    		filho2 = parent2_subset1.concat(parent1_subset2).concat(parent2_subset3);
+    	}
 
     	//Realiza a mutação
 
@@ -135,14 +145,41 @@ module.exports = function(filePath, array, seed) {
     	return solucoes;
     };
 
-    let proximaGeracao = gerarSolucao(inicialObj.solucoes[0], inicialObj.solucoes[1]);
+    let calculaMelhorPai = () => {
+        let melhorPai = [];
+        let melhorPaiAux = [];
+        for (var i = 0; i < inicialObj.solucoes.length; i++) {
+            melhorPaiAux.push(calcula(inicialObj.solucoes[i]));
+        }
+        melhorPaiAux.sort(function(a, b){return a-b});
+        //console.log(melhorPaiAux);
+        melhorPai.push(melhorPaiAux[0]);
+        melhorPai.push(melhorPaiAux[1]);
+
+        for (var i = 0; i < melhorPai.length; i++) {
+            for (var j = 0; j < inicialObj.solucoes.length; j++) {
+             if (melhorPai[i] == calcula(inicialObj.solucoes[j])) {
+                melhorPai.splice(i, 1, inicialObj.solucoes[j]);
+            }   
+        }
+    }
+
+    return melhorPai;
+}
+
+let melhorPai = calculaMelhorPai();
+//console.log(melhorPai);
+
+let proximaGeracao = gerarSolucao(melhorPai[0], melhorPai[1]);
+
+//let proximaGeracao = gerarSolucao(inicialObj.solucoes[0], inicialObj.solucoes[1]);
     //console.log(proximaGeracao);
 
     let count = 0;
-    let newMax = 100000;
+    let newMax = 10000;
 
     console.time("tempo gasto");
-    while (melhorSolucao != 0 && (count < 100000 || newMax > 0)) {
+    while (melhorSolucao != 0 && (count < 10000 || newMax > 0)) {
     	let melhorInicial = melhorSolucao;
     	proximaGeracao = gerarSolucao(proximaGeracao[0], proximaGeracao[1]);
     	if (melhorInicial != melhorSolucao) {
