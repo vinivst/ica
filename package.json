@@ -5,8 +5,7 @@
   "main": "main.js",
   "bin": "bin.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node bin.js arrays.json"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
