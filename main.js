@@ -8,6 +8,7 @@ module.exports = function(filePath, array, seed) {
     //instancia o mersenne com a seed
     var MersenneTwister = require('mersenne-twister');
     var generator = new MersenneTwister(seed);
+    var generator2 = new MersenneTwister(seed + Math.floor(generator.random()*10));
 
     //gera as 2 soluções iniciais aleatorias do tipo [0 1 0 1 1 1 0] para o array lido
     let inicialObj = {
@@ -16,7 +17,7 @@ module.exports = function(filePath, array, seed) {
 
     for (var i = 0; i < Math.floor(generator.random()*1000000 + 2); i++) {
     	let inicial = object.arrays[array].map((num) => {
-    		if (Math.floor(generator.random()*10) <= 5) {
+    		if (Math.floor(generator.random()*10) <= Math.floor(generator2.random()*10)) {
     			return 0;
     		} else {
     			return 1;
@@ -27,14 +28,16 @@ module.exports = function(filePath, array, seed) {
 
     // Soma cada subconjunto e calcula a diferença, gerando uma solução
 
+    let arrayNumbers = object.arrays[array];
+
     let calcula = (array) => {
     	let count1 = 0;
     	let count2 = 0;
     	let sumSubset = array.map((val, index, arr) => {
     		if (val == 0) {
-    			count1 += array[index]
+    			count1 += arrayNumbers[index];
     		} else {
-    			count2 += array[index]
+    			count2 += arrayNumbers[index];
     		}
     	});
 
@@ -80,7 +83,7 @@ module.exports = function(filePath, array, seed) {
 
     	//---------Aleatoriamente decide se vai fazer 2 ou 3 divisões
 
-    	if (Math.floor(generator.random()*10) <= 4) {
+    	if (Math.floor(generator.random()*10) <= Math.floor(generator2.random()*10)) {
     		filho1 = subset1.concat(subset4);
     		filho2 = subset3.concat(subset2);
     	} else {
@@ -88,14 +91,16 @@ module.exports = function(filePath, array, seed) {
     		filho2 = parent2_subset1.concat(parent1_subset2).concat(parent2_subset3);
     	}
 
-    	//Realiza a mutação
+    	//Realiza a mutação em um % aleatorio do individuo
 
     	let mutacao = (array) => {
-    		let indexMutacao = Math.floor(generator.random()*array.length) - 1;
-    		if (array[indexMutacao] == 0) {
-    			array[indexMutacao] = 1;
-    		} else {
-    			array[indexMutacao] = 0;
+    		for (var i = 0; i < Math.floor(generator.random()*array.length)/Math.floor(generator2.random()*array.length); i++) {
+    			let indexMutacao = Math.floor(generator.random()*array.length) - 1;
+    			if (array[indexMutacao] == 0) {
+    				array[indexMutacao] = 1;
+    			} else {
+    				array[indexMutacao] = 0;
+    			}
     		}
     		return array;
     	}
@@ -146,28 +151,28 @@ module.exports = function(filePath, array, seed) {
     };
 
     let calculaMelhorPai = () => {
-        let melhorPai = [];
-        let melhorPaiAux = [];
-        for (var i = 0; i < inicialObj.solucoes.length; i++) {
-            melhorPaiAux.push(calcula(inicialObj.solucoes[i]));
-        }
-        melhorPaiAux.sort(function(a, b){return a-b});
+    	let melhorPai = [];
+    	let melhorPaiAux = [];
+    	for (var i = 0; i < inicialObj.solucoes.length; i++) {
+    		melhorPaiAux.push(calcula(inicialObj.solucoes[i]));
+    	}
+    	melhorPaiAux.sort(function(a, b){return a-b});
         //console.log(melhorPaiAux);
         melhorPai.push(melhorPaiAux[0]);
         melhorPai.push(melhorPaiAux[1]);
 
         for (var i = 0; i < melhorPai.length; i++) {
-            for (var j = 0; j < inicialObj.solucoes.length; j++) {
-             if (melhorPai[i] == calcula(inicialObj.solucoes[j])) {
-                melhorPai.splice(i, 1, inicialObj.solucoes[j]);
-            }   
+        	for (var j = 0; j < inicialObj.solucoes.length; j++) {
+        		if (melhorPai[i] == calcula(inicialObj.solucoes[j])) {
+        			melhorPai.splice(i, 1, inicialObj.solucoes[j]);
+        		}   
+        	}
         }
+
+        return melhorPai;
     }
 
-    return melhorPai;
-}
-
-let melhorPai = calculaMelhorPai();
+    let melhorPai = calculaMelhorPai();
 //console.log(melhorPai);
 
 let proximaGeracao = gerarSolucao(melhorPai[0], melhorPai[1]);
@@ -176,10 +181,10 @@ let proximaGeracao = gerarSolucao(melhorPai[0], melhorPai[1]);
     //console.log(proximaGeracao);
 
     let count = 0;
-    let newMax = 10000;
+    let newMax = 1000000;
 
     console.time("tempo gasto");
-    while (melhorSolucao != 0 && (count < 10000 || newMax > 0)) {
+    while (melhorSolucao != 0 && (count < 1000000 || newMax > 0)) {
     	let melhorInicial = melhorSolucao;
     	proximaGeracao = gerarSolucao(proximaGeracao[0], proximaGeracao[1]);
     	if (melhorInicial != melhorSolucao) {
