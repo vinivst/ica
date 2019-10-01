@@ -181,10 +181,10 @@ let proximaGeracao = gerarSolucao(melhorPai[0], melhorPai[1]);
     //console.log(proximaGeracao);
 
     let count = 0;
-    let newMax = 1000000;
+    let newMax = 500000;
 
     console.time("tempo gasto");
-    while (melhorSolucao != 0 && (count < 1000000 || newMax > 0)) {
+    while (melhorSolucao != 0 && (count < 500000 || newMax > 0)) {
     	let melhorInicial = melhorSolucao;
     	proximaGeracao = gerarSolucao(proximaGeracao[0], proximaGeracao[1]);
     	if (melhorInicial != melhorSolucao) {
